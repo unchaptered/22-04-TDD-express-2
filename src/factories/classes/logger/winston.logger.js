@@ -25,7 +25,7 @@ export default class WinstonLogger {
             transports: [
                 new winstonDaily({
                     level: 'info',
-                    datePattern: 'YYYY-MM-DD',
+                    datePattern: 'YY-MM-DD',
                     dirname: logDir,
                     filename: `%DATE%.log`,
                     maxFiles: 30,  // 30일치 로그 파일 저장
@@ -33,7 +33,7 @@ export default class WinstonLogger {
                 }),
                 new winstonDaily({
                     level: 'error',
-                    datePattern: 'YYYY-MM-DD',
+                    datePattern: 'YY-MM-DD',
                     dirname: logDir + '/error',  // error.log 파일은 /logs/error 하위에 저장 
                     filename: `%DATE%.error.log`,
                     maxFiles: 30,
@@ -41,6 +41,10 @@ export default class WinstonLogger {
                 }),
             ]
         });
+    }
+    
+    static resetInstance() {
+        WinstonLogger.logger = undefined;
     }
     
 }
