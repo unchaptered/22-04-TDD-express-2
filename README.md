@@ -8,8 +8,8 @@ package.json 에 문제가 있을 시 아래 파일을 기준으로 인스톨 �
 
 ### Development Modules
 
-npm i dotenv express mongoose core-js
-
+npm i dotenv express mongoose core-js cors helmet winston-daily-rotate-file
+npm i mongoose
 
 ### Environment Modules
 

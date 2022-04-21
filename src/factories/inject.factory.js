@@ -1,5 +1,5 @@
 export default class InjectFactory {
-    getServerMode = () => process.env.NODE_ENV;
-    getDatabase = () => process.env.DB_ADDRESS;
-    getPort = () => process.env.PORT;
+    static getServerMode = () => process.env.NODE_ENV;
+    static getDatabase = () => process.env.DB_ADDRESS;
+    static getPort = () => process.env.PORT;
 }

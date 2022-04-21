@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export default getMongoDB = (SERVER_MODE, DB_ADDRESS) => {
+export const getMongoDB = (SERVER_MODE, DB_ADDRESS) => {
 
     const mongooseModule = mongoose.connect(DB_ADDRESS)
         .then(() => {

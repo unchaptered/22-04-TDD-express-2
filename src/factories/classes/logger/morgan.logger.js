@@ -1,6 +1,6 @@
 import morgan from 'morgan';
 
-class MorganLogger {
+export default class MorganLogger {
 
     static logger;
 

@@ -1,7 +1,7 @@
 import winston from 'winston';
 import winstonDaily from 'winston-daily-rotate-file';
 
-class WinstonLogger {
+export default class WinstonLogger {
 
     static logger;
 

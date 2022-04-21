@@ -1,7 +1,7 @@
 import express from 'express';
 
-import getConfig from './options/config';
-import getMongoDB from './options/database';
+import { getConfig } from './options/config.option';
+import { getMongoDB } from './options/database.option';
 
 import InjectFactory from './factories/inject.factory';
 import LoggerFactory from './factories/logger.factory';
