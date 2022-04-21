@@ -17,4 +17,4 @@ npm i @babel/runtime @types/jest babel-plugin-add-module-exports
 
 npm i -D @babel/cli @babel/core @babel/node @babel/plugin-proposal-class-properties @babel/plugin-transform-runtime @babel/preset-env @babel/preset-flow eslint eslint-config-airbnb-base eslint-config-prettier eslint-plugin-import eslint-plugin-jest eslint-plugin-prettier eslint-watch prettier superagent supertest supertest-as-promised @babel/preset-react 
 
-npm i -D cross-env nodemon node-mocks-http supertest jest
+npm i -D cross-env nodemon node-mocks-http supertest jest faker@5.5.3
