@@ -1,6 +1,6 @@
-# Express-web
+# 22-04-TDD-express-2
 
-Express-web 은 보일러 플레이트 탬플릿입니다.
+jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~
 
 ## Install
 
