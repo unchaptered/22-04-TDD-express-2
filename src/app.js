@@ -1,29 +1,41 @@
 import express from 'express';
 
+// Environment Settings
+import 'dotenv/config';
 import { getConfig } from './options/config.option';
-import { getMongoDB } from './options/database.option';
+import { getMongoDB } from './options/mongo.option';
+import { getCorsInstance } from './options/cors.option';
 
-import InjectFactory from './factories/inject.factory';
-import LoggerFactory from './factories/logger.factory';
+import InjectFactory from './factories/inject.factory'; // Environment Injector
+import LoggerFactory from './factories/logger.factory'; // System Logger Factory 
+import JwtModule from './token/jwt.module'; // Authentication Module
 
 import authRouter from './auth/auth.router';
-import homeRouter from './home/home.router';
 import shopRouter from './shop/shop.router';
 
-const MODE = InjectFactory.getServerMode();
-const PORT = InjectFactory.getPort() ?? 8800;
-
-getConfig(MODE);
-getMongoDB(MODE, InjectFactory.getDatabase());
+import homeRouter from './home/home.router';
 
 const app = express();
+const CORS = getCorsInstance();
+
+const MODE = InjectFactory.getServerMode();
+const PORT = InjectFactory.getPort() ?? 4000;
+
+getConfig(MODE);
+getMongoDB(MODE, InjectFactory.getMongoAddress());
+
+JwtModule.setSecert( InjectFactory.getJwtSecret() );
+JwtModule.setAlgorithm( InjectFactory.getJwtAlgorithm() );
+JwtModule.setAccessExpired( InjectFactory.getJwtAccessExpired() );
+JwtModule.setRefreshExpired( InjectFactory.getJwtRefreshExpired() );
     
+app.use(CORS);
 app.use(express.json());
 app.use(LoggerFactory.getLogger());
 
 app.use('/auth', authRouter);
 app.use('/shop', shopRouter);
-app.use('/:path', homeRouter);
+app.use('/:id', homeRouter);
 
 app.listen(PORT, () => {
     if (MODE !== 'test') console.log(`Server is running on ${PORT}`);

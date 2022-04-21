@@ -7,7 +7,7 @@ import WinstonLogger from './classes/logger/winston.logger';
 export default class LoggerFactory {
 
     constructor() {
-        throw new Error('Logger Service is utility class');
+        throw new Error('Logger Factory is utility class');
     }
 
     static getLogger(MODE) {

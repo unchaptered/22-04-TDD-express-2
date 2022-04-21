@@ -8,5 +8,7 @@ export const getConfig = (SERVER_MODE) => {
     };
     
     const configModule = dotenv.config(configOption);
+
+    return [configOption, configModule];
     
 }
