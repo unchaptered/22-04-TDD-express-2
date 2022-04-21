@@ -12,18 +12,20 @@ describe('FormFactory', () => {
 
     let message;
     let result;
+    let funcType;
 
-
+    beforeAll(() => funcType = 'function');
     beforeEach(() => {
         message = undefined;
         result = undefined;
     });
 
-    describe('Function List', () => {
-        it('getSuccessForm must be defined', () => expect(ResFormFactory.getSuccessForm).toBeDefined());
-        it('getSuccessForm must be function', () => expect(typeof ResFormFactory.getSuccessForm).toBe('function'));
-        it('getFailureForm must be defined', () => expect(ResFormFactory.getFailureForm).toBeDefined());
-        it('getFailureForm must be function', () => expect(typeof ResFormFactory.getFailureForm).toBe('function'));
+    it('Function List', () => {
+        expect(typeof ResFormFactory.getSuccessForm).toBe(funcType);
+        expect(typeof ResFormFactory.getFailureForm).toBe(funcType);
+        expect(typeof ResFormFactory.getUnauthorizedForm).toBe(funcType);
+        expect(typeof ResFormFactory.getAccessTokenExpiredForm).toBe(funcType);
+        expect(typeof ResFormFactory.getRefreshTokenExpiredForm).toBe(funcType);
     });
 
     describe('Function Return Primitive Type', () => {
@@ -37,7 +39,7 @@ describe('FormFactory', () => {
                 isSuccess:true,
                 message,
                 result
-            })
+            });
         });
         it('getFailureForm return string', () => {
 
@@ -71,7 +73,6 @@ describe('FormFactory', () => {
             expect(json).toEqual({ isSuccess: true, message, result });
 
         });
-
         it('message is Array<string>, result is Object', () => {
 
             message = junkMessageListGenerator();
@@ -89,8 +90,7 @@ describe('FormFactory', () => {
             const json = ResFormFactory.getSuccessForm(message, result);
             expect(json).toEqual({ isSuccess: true, message, result });
 
-        });
-        
+        });  
         it('message is Error, result is Object', () => {
 
             message = junkMeesageErrorGenerator();
@@ -109,6 +109,32 @@ describe('FormFactory', () => {
             expect(json).toEqual({ isSuccess: true, message, result });
             
         });
-
     });
+
+    describe('Authentification Form', () => {
+        it('getUnauthorizedForm', () => {
+            const resJson = ResFormFactory.getUnauthorizedForm();
+            expect(resJson).toEqual({
+                isSuccess:false,
+                message: 'Your must give two token for us',
+                result: {}
+            });
+        });
+        it('getAccessTokenExpiredForm', () => {
+            const resJson = ResFormFactory.getAccessTokenExpiredForm();
+            expect(resJson).toEqual({
+                isSuccess:false,
+                message: 'Access Token is expired',
+                result: {}
+            });
+        });
+        it('getRefreshTokenExpiredForm', () => {
+            const resJson = ResFormFactory.getRefreshTokenExpiredForm();
+            expect(resJson).toEqual({
+                isSuccess:false,
+                message: 'Refresh Token is expired',
+                result: {}
+            });
+        })
+    })
 });

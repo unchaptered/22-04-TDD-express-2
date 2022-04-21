@@ -7,6 +7,16 @@ describe('WinstonLogger', () => {
         funcType = 'function';
     });
 
+    describe('Utility Test', () => {
+        it('WinstonLogger can\'t be instance', () => {
+            try {
+                new WinstonLogger();
+            } catch (error) {
+                expect(error).toEqual(new Error('Winston Logger is uility class'));
+            }
+        });
+    });
+
     describe('Function List', () => {
         it('getInstance must be defined', () => expect(WinstonLogger.getInstance).toBeDefined());
         it('getInstance must be function', () => expect(typeof WinstonLogger.getInstance).toBe(funcType));
@@ -36,13 +46,4 @@ describe('WinstonLogger', () => {
 
     });
 
-    describe('Utility Test', () => {
-        it('WinstonLogger can\'t be instance', () => {
-            try {
-                new WinstonLogger();
-            } catch (error) {
-                expect(error).toEqual(new Error('Winston Logger is uility class'));
-            }
-        });
-    });
 });

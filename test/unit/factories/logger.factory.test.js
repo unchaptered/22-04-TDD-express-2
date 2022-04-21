@@ -1,4 +1,6 @@
 import LoggerFactory from "../../../src/factories/logger.factory";
+import MorganLogger from "../../../src/factories/classes/logger/morgan.logger";
+import WinstonLogger from "../../../src/factories/classes/logger/winston.logger";
 
 describe('LoggerFactory', () => {
     
@@ -12,6 +14,16 @@ describe('LoggerFactory', () => {
         SERVER_MODE_PROD = 'prod';
         SERVER_MODE_DEV = 'dev';
         SERVER_MODE_TEST = 'test';
+    });
+
+    describe('Utility Test', () => {
+        it('LoggerFactory can\'t be instance', () => {
+            try {
+                new LoggerFactory();
+            } catch (error) {
+                expect(error).toEqual(new Error('Logger Factory is utility class'));
+            }
+        });
     });
 
     describe('Function List', () => {
@@ -45,5 +57,25 @@ describe('LoggerFactory', () => {
         });
         
     })
+
+    describe('Test GetInstance', () => {
+
+        beforeAll(() => {
+            MorganLogger.getInstance = jest.fn();
+            WinstonLogger.getInstance = jest.fn();
+        });
+
+        it('getMorganLogger', () => {
+            MorganLogger.getInstance.mockReturnValue({});
+            const logger = LoggerFactory.getMorganLogger();
+            expect(logger).toBeDefined();
+        });
+
+        it('getWinstonLogger', () => {
+            WinstonLogger.getInstance.mockReturnValue({});
+            const logger = LoggerFactory.getWinstonLogger();
+            expect(logger).toBeDefined();
+        });
+    });
 
 });

@@ -7,6 +7,16 @@ describe('MorganLogger', () => {
         funcType = 'function';
     });
 
+    describe('Utility Test', () => {
+        it('MorganLogger can\'t be instance', () => {
+            try {
+                new MorganLogger();
+            } catch (error) {
+                expect(error).toEqual(new Error('Morgan Logger is uility class'));
+            }
+        });
+    });
+
     describe('Function List', () => {
         it('getInstance must be defined', () => expect(MorganLogger.getInstance).toBeDefined());
         it('getInstance must be function', () => expect(typeof MorganLogger.getInstance).toBe(funcType));
@@ -30,7 +40,7 @@ describe('MorganLogger', () => {
             const loggerBefore = MorganLogger.logger;
             MorganLogger.getInstance();
             expect(MorganLogger.logger).toBe(loggerBefore);
-        })
+        });
 
         it('Four, logger must be undefined after resetInstance', () => {
             MorganLogger.resetInstance();
@@ -39,13 +49,4 @@ describe('MorganLogger', () => {
 
     });
 
-    describe('Utility Test', () => {
-        it('MorganLogger can\'t be instance', () => {
-            try {
-                new MorganLogger();
-            } catch (error) {
-                expect(error).toEqual(new Error('Morgan Logger is uility class'));
-            }
-        });
-    })
 });
