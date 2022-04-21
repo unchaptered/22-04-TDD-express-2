@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-export default getConfig = (SERVER_MODE) => {
+export const getConfig = (SERVER_MODE) => {
 
     const configOption = {
         path: SERVER_MODE === 'prod' ? '.env.prod'
@@ -8,5 +8,7 @@ export default getConfig = (SERVER_MODE) => {
     };
     
     const configModule = dotenv.config(configOption);
+
+    return [configOption, configModule];
     
 }
