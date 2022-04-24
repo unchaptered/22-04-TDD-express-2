@@ -3,8 +3,8 @@ import ResFormFactory from '../../factories/res.form.factory';
 
 export const refreshTokenFilter = (req, res, next) => {
 
-    const refreshTokenEncrypted = req?.header?.refresh;
-    if (accessTokenEncrypted === undefined || refreshTokenEncrypted === undefined)
+    const refreshTokenEncrypted = req?.headers?.refresh;
+    if (refreshTokenEncrypted === undefined)
         return res.status(401).json(ResFormFactory.getUnauthorizedForm());
 
     const refreshToken = refreshTokenEncrypted.split('Bearer ')[1];

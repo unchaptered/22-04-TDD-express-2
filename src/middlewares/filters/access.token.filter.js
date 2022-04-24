@@ -8,7 +8,7 @@ export const accessTokenFilter = (req, res, next) => {
         return res.status(401).json(ResFormFactory.getUnauthorizedForm());
 
     const accessToken = accessTokenEncrypted.split('Bearer ')[1];
-    const { isValidToken, message, result } = JwtModule.decodeToken(accessToken);
+    const { isValidToken } = JwtModule.decodeToken(accessToken);
     if (!isValidToken)
         return res.status(401).json(ResFormFactory.getAccessTokenExpiredForm());
 
