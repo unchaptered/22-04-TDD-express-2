@@ -1,4 +1,5 @@
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
+
 import JwtModule from "../../../src/token/jwt.module";
 import { junkUserFormGenerator } from '../data/junk.user.generator';
 
@@ -30,12 +31,9 @@ describe('JwtModule', () => {
         it('REFRESH_EXPIRED must be defined', () => expect(JwtModule.REFRESH_EXPIRED).toBeDefined());
     });
     describe('Function List', () => {
-        
-        it('encodeAccessToken must be defined', () => expect(JwtModule.encodeAccessToken).toBeDefined());
         it('encodeAccessToken must be function', () => expect(typeof JwtModule.encodeAccessToken).toBe(funcType));
-        it('encodeRefreshToken must be defined', () => expect(JwtModule.encodeRefreshToken).toBeDefined());
         it('encodeRefreshToken must be function', () => expect(typeof JwtModule.encodeRefreshToken).toBe(funcType));
-        it('decodeToken must be defined', () => expect(JwtModule.decodeToken).toBeDefined());
+        it('verifyToken must be function', () => expect(typeof JwtModule.verifyToken).toBe(funcType));
         it('decodeToken must be function', () => expect(typeof JwtModule.decodeToken).toBe(funcType));
     });
 
@@ -78,46 +76,88 @@ describe('JwtModule', () => {
             accessToken = JwtModule.encodeAccessToken(DATA);
             refreshToken = JwtModule.encodeRefreshToken();
 
-            const decodeAccessToken = JwtModule.decodeToken(accessToken);
-            const decodeRefreshToken = JwtModule.decodeToken(refreshToken);
+            const verifyAccessToken = JwtModule.verifyToken(accessToken);
+            const verifyRefreshToken = JwtModule.verifyToken(refreshToken);
 
-            expect(decodeAccessToken).toStrictEqual({ 
-                isValidToken: true,
+            const decodeAccessToken = JwtModule.decodeToken(accessToken);
+            const decodeRefrshToken = JwtModule.decodeToken(refreshToken);
+
+            expect(verifyAccessToken).toStrictEqual({ 
+                isLiveToken: true,
                 message: "authorized",
-                decodeToken: { ...DATA,
+                verifyToken: { ...DATA,
+                    exp: verifyAccessToken.verifyToken.exp,
+                    iat: verifyAccessToken.verifyToken.iat
+                }
+            });
+            expect(verifyRefreshToken).toStrictEqual({
+                isLiveToken: true,
+                message: "authorized",
+                verifyToken: {
+                    exp: verifyRefreshToken.verifyToken.exp,
+                    iat: verifyRefreshToken.verifyToken.iat
+                }
+            });
+
+            expect(decodeAccessToken).toStrictEqual({
+                isValidToken: true,
+                message: 'authorized',
+                decodeToken: {
+                    ...DATA,
                     exp: decodeAccessToken.decodeToken.exp,
                     iat: decodeAccessToken.decodeToken.iat
                 }
             });
-            expect(decodeRefreshToken).toStrictEqual({
+            expect(decodeRefrshToken).toStrictEqual({
                 isValidToken: true,
-                message: "authorized",
+                message: 'authorized',
                 decodeToken: {
-                    exp: decodeRefreshToken.decodeToken.exp,
-                    iat: decodeRefreshToken.decodeToken.iat
+                    exp: decodeRefrshToken.decodeToken.exp,
+                    iat: decodeRefrshToken.decodeToken.iat
                 }
             });
         });
 
         it('Alive Time Check 200ms : all token alive', async () => {
             setTimeout(() => {
-                const decodeAccessToken = JwtModule.decodeToken(accessToken);
-                const decodeRefreshToken = JwtModule.decodeToken(refreshToken);
+                const verifyAccessToken = JwtModule.verifyToken(accessToken);
+                const verifyRefreshToken = JwtModule.verifyToken(refreshToken);
     
-                expect(decodeAccessToken).toStrictEqual({ 
-                    isValidToken: true,
+                const decodeAccessToken = JwtModule.decodeToken(accessToken);
+                const decodeRefrshToken = JwtModule.decodeToken(refreshToken);
+
+                expect(verifyAccessToken).toStrictEqual({ 
+                    isLiveToken: true,
                     message: "authorized",
-                    decodeToken: { ...DATA,
+                    verifyToken: { ...DATA,
+                        exp: verifyAccessToken.verifyToken.exp,
+                        iat: verifyAccessToken.verifyToken.iat
+                    }
+                });
+                expect(verifyRefreshToken).toStrictEqual({
+                    isLiveToken: true,
+                    message: "authorized",
+                    verifyToken: {
+                        exp: verifyRefreshToken.verifyToken.exp,
+                        iat: verifyRefreshToken.verifyToken.iat
+                    }
+                });
+
+                expect(decodeAccessToken).toStrictEqual({
+                    isValidToken: true,
+                    message: 'authorized',
+                    decodeToken: {
+                        ...DATA,
                         exp: decodeAccessToken.decodeToken.exp,
                         iat: decodeAccessToken.decodeToken.iat
                     }
                 });
-                expect(decodeRefreshToken).toStrictEqual({
+                expect(decodeRefrshToken).toStrictEqual({
                     isValidToken: true,
-                    message: "authorized",
+                    message: 'authorized',
                     decodeToken: {
-                        exp: decodeRefreshToken.decodeToken.exp,
-                        iat: decodeRefreshToken.decodeToken.iat
+                        exp: decodeRefrshToken.decodeToken.exp,
+                        iat: decodeRefrshToken.decodeToken.iat
                     }
                 });
             }, 200);
@@ -125,39 +165,81 @@ describe('JwtModule', () => {
 
         it('Alive Time Check 1s : access token dead', async () => {
             setTimeout(() => {
-                const decodeAccessToken = JwtModule.decodeToken(accessToken);
-                const decodeRefreshToken = JwtModule.decodeToken(refreshToken);
+                const verifyAccessToken = JwtModule.verifyToken(accessToken);
+                const verifyRefreshToken = JwtModule.verifyToken(refreshToken);
     
-                expect(decodeAccessToken).toStrictEqual({ 
-                    isValidToken: false,
+                const decodeAccessToken = JwtModule.decodeToken(accessToken);
+                const decodeRefrshToken = JwtModule.decodeToken(refreshToken);
+
+                expect(verifyAccessToken).toStrictEqual({ 
+                    isLiveToken: false,
                     message: "unauthorized",
-                    decodeToken: new TokenExpiredError('jwt expired')
+                    verifyToken: new TokenExpiredError('jwt expired')
                 });
-                expect(decodeRefreshToken).toStrictEqual({
-                    isValidToken: true,
+                expect(verifyRefreshToken).toStrictEqual({
+                    isLiveToken: true,
                     message: "authorized",
+                    verifyToken: {
+                        exp: verifyRefreshToken.verifyToken.exp,
+                        iat: verifyRefreshToken.verifyToken.iat
+                    }
+                });
+                
+                expect(decodeAccessToken).toStrictEqual({
+                    isValidToken: true,
+                    message: 'authorized',
                     decodeToken: {
-                        exp: decodeRefreshToken.decodeToken.exp,
-                        iat: decodeRefreshToken.decodeToken.iat
+                        ...DATA,
+                        exp: decodeAccessToken.decodeToken.exp,
+                        iat: decodeAccessToken.decodeToken.iat
+                    }
+                });
+                expect(decodeRefrshToken).toStrictEqual({
+                    isValidToken: true,
+                    message: 'authorized',
+                    decodeToken: {
+                        exp: decodeRefrshToken.decodeToken.exp,
+                        iat: decodeRefrshToken.decodeToken.iat
                     }
                 });
             }, 1000);
         });
 
-        it('Alive Time Check 3s', async () => {
+        it('Alive Time Check 3s : all token dead', async () => {
             setTimeout(() => {
+                const verifyAccessToken = JwtModule.verifyToken(accessToken);
+                const verifyRefreshToken = JwtModule.verifyToken(refreshToken);
+
                 const decodeAccessToken = JwtModule.decodeToken(accessToken);
-                const decodeRefreshToken = JwtModule.decodeToken(refreshToken);
-    
-                expect(decodeAccessToken).toStrictEqual({ 
-                    isValidToken: false,
+                const decodeRefrshToken = JwtModule.decodeToken(refreshToken);
+                
+                expect(verifyAccessToken).toStrictEqual({ 
+                    isLiveToken: false,
                     message: "unauthorized",
-                    decodeToken: new TokenExpiredError('jwt expired')
+                    verifyToken: new TokenExpiredError('jwt expired')
                 });
-                expect(decodeRefreshToken).toStrictEqual({ 
-                    isValidToken: false,
+                expect(verifyRefreshToken).toStrictEqual({
+                    isLiveToken: false,
                     message: "unauthorized",
-                    decodeToken: new TokenExpiredError('jwt expired')
+                    verifyToken: new TokenExpiredError('jwt expired')
+                });
+                
+                expect(decodeAccessToken).toStrictEqual({
+                    isValidToken: true,
+                    message: 'authorized',
+                    decodeToken: {
+                        ...DATA,
+                        exp: decodeAccessToken.decodeToken.exp,
+                        iat: decodeAccessToken.decodeToken.iat
+                    }
+                });
+                expect(decodeRefrshToken).toStrictEqual({
+                    isValidToken: true,
+                    message: 'authorized',
+                    decodeToken: {
+                        exp: decodeRefrshToken.decodeToken.exp,
+                        iat: decodeRefrshToken.decodeToken.iat
+                    }
                 });
             }, 3000);
         });
@@ -184,8 +266,8 @@ describe('JwtModule', () => {
                 JwtModule.encodeRefreshToken();
                 expect(jwt.sign).not.toBeCalled();
             });
-            it('decodeToken return nothing', () => {
-                JwtModule.decodeToken();
+            it('verifyToken return nothing', () => {
+                JwtModule.verifyToken();
                 expect(jwt.sign).not.toBeCalled();
             });
         });

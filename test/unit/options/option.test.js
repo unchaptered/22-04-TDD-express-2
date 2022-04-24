@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { getConfig } from "../../../src/options/config.option";
 import { getCorsInstance } from "../../../src/options/cors.option";
 import { getMongoDB } from "../../../src/options/mongo.option";
+import { getRedisDB } from "../../../src/options/redis.option";
 import { getHelmet } from "../../../src/options/helmet.option";
 
 describe('Options', () => {
@@ -15,16 +16,10 @@ describe('Options', () => {
 
     describe('Option List', () => {
         
-        it('getConfig must be defined', () => expect(getConfig).toBeDefined());
         it('getConfig must be function', () => expect(typeof getConfig).toBe(funcType));
-
-        it('getCorsInstance must be defined', () => expect(getCorsInstance).toBeDefined());
         it('getCorsInstance must be function', () => expect(typeof getCorsInstance).toBe(funcType));
-
-        it('getMongoDB must be defined', () => expect(getMongoDB).toBeDefined());
         it('getMongoDB must be function', () => expect(typeof getMongoDB).toBe(funcType));
-
-        it('getHelmet must be defined', () => expect(getHelmet).toBeDefined());
+        it('getRedisDB must be function', () => expect(typeof getRedisDB).toBe(funcType));
         it('getHelmet must be function', () => expect(typeof getHelmet).toBe(funcType));
 
     });
@@ -55,6 +50,7 @@ describe('Options', () => {
             expect(configModule.parsed.HOST).toBeDefined();
             expect(configModule.parsed.PORT).toBeDefined();
         });
+        
     });
 
     // describe('Mongo Option', () => {

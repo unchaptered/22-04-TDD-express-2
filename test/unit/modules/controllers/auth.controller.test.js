@@ -1,5 +1,6 @@
 import * as authController from '../../../../src/auth/auth.controller';
 import * as authService from '../../../../src/auth/auth.service';
+import { redisConnection } from '../../../../src/options/redis.option';
 
 import { getUserForm } from '../../data/junk.user.generator';
 import JwtModule from '../../../../src/token/jwt.module';
@@ -22,6 +23,8 @@ describe('AuthController', () => {
         // BASE_URL/auth
         it('join must be function', () => expect(typeof authController.join).toBe(funcType));
         it('login must be function', () => expect(typeof authController.login).toBe(funcType));
+
+        it('reGetAccessToken must be de function', () => expect(typeof authController.reGetAccessToken).toBe(funcType));
 
         // BASE_URL/auth/profile
         it('getProfile must be function', ()=> expect(typeof authController.getProfile).toBe(funcType));
@@ -196,6 +199,8 @@ describe('AuthController', () => {
 
         });
 
+        describe('ReGet AccessToken Logic', () => {
+        });
     });
 
 });
