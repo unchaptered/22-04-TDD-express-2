@@ -1,11 +1,10 @@
-import { accessTokenFilter } from '../../../../src/middlewares/filters/access.token.filter';
-
+import httpMocks from 'node-mocks-http';
 import JwtModule from '../../../../src/token/jwt.module';
 import ResFormFactory from '../../../../src/factories/res.form.factory';
 
-import httpMocks from 'node-mocks-http';
+import { accessTokenFilter } from '../../../../src/middlewares/filters/access.token.filter';
 
-describe('AccessTokenFilter', () => {
+describe('RepublishTokenFilter', () => {
 
     let req;
     let res;
@@ -18,7 +17,7 @@ describe('AccessTokenFilter', () => {
         res = httpMocks.createResponse();
         next = jest.fn();
 
-        JwtModule.decodeToken = jest.fn();
+        JwtModule.verifyToken = jest.fn();
     });
     it('Middleware Type', () => expect(typeof accessTokenFilter).toBe(funcType));
     
@@ -27,7 +26,7 @@ describe('AccessTokenFilter', () => {
         it('401 unauthorize [Request, without token]', async () => {
             await accessTokenFilter(req, res, next);
 
-            expect(JwtModule.decodeToken).not.toBeCalled();
+            expect(JwtModule.verifyToken).not.toBeCalled();
             expect(next).not.toBeCalled();
 
             expect(res.statusCode).toBe(401);
@@ -39,13 +38,13 @@ describe('AccessTokenFilter', () => {
 
         it('401 unauthorize [Request, with expired token]', async () => {
             req.headers.authorization = 'Bearer sampletokenstring';
-            JwtModule.decodeToken.mockReturnValue({
-                isValidToken: false, message: 'sample', result: 'sample'
+            JwtModule.verifyToken.mockReturnValue({
+                isLiveToken: false, message: 'sample', verifyToken: 'sample'
             });
             
             await accessTokenFilter(req, res, next);
 
-            expect(JwtModule.decodeToken).toBeCalled();
+            expect(JwtModule.verifyToken).toBeCalled();
             expect(next).not.toBeCalled();
             
             expect(res.statusCode).toBe(401);
@@ -57,12 +56,12 @@ describe('AccessTokenFilter', () => {
 
         it('next [Request, with valid token]', async () => {
             req.headers.authorization = 'Bearer sampletokenstring';
-            JwtModule.decodeToken.mockReturnValue({
-                isValidToken: true, message: 'sample', result: 'sample'
+            JwtModule.verifyToken.mockReturnValue({
+                isLiveToken: true, message: 'sample', verifyToken: 'sample'
             });
             await accessTokenFilter(req, res, next);
             
-            expect(JwtModule.decodeToken).toBeCalled();
+            expect(JwtModule.verifyToken).toBeCalled();
             expect(next).toBeCalled();
 
         });
