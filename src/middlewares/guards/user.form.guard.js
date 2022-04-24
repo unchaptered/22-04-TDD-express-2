@@ -7,7 +7,6 @@ export const userFormGuard = (req, res, next) => {
 
     const target = new Set([...formKey]);
     const datas = req?.body;
-    console.error(datas);
     
     for (const key in datas) target.delete(key);
     if (target.size === 0) return next();
