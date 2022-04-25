@@ -25,6 +25,146 @@ jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~
 위와 같은 문제점을 TDD & OOP 에 입각한 개발로 해결할 수 있을 것이라고 생각했습니다.
 ```
 
+## 1. Structure
+
+```
+과거에는 router, controller, service 등을 비슷한 유형끼리 모았습니다.
+하지만 이러한 방식이 작업의 생산성을 낮추고 수정이 어렵다는 것을 느끼게 되었습니다.
+
+따라서 home / auth / shop(expected) 등의 폴더 안에 각기 필요한 router, controller, service 등을 넣었습니다.
+
+router 에서는 경우에 따라 middleware, controller 를 호출하게 되고
+controller 에서는 경우에 따라서 service 를 호출하여 정보를 받게 됩니다.
+service 는 실제적으로 MongoDB, Redis 에 접근해서 정보를 받아오는 비동기 처리 부분을 담았습니다.
+```
+
+## 2. Modules
+
+```
+2달 전, 유투브 개발바닥에서 들은 향로님의 말이 찔렸습니다.
+테스트 코드 한 줄, 객체의 역할과 책임 협력도 모르면서 TypeScript 를 사용하는 것이 의미가 없다.
+
+실제로 DTO 는 저를 너무 불편하게 만들었고 제대로 이해하지 못한 Nest 는 전술한 문제점이 있었습니다.
+그래서 여러 역할을 분리하고 캡슐화를 통해서 느슨한 상태로 만들어보도록 노력했습니다.
+
+따라서 다음과 같은 모듈을 추가하였습니다.
+
+1. Options
+2. Token
+3. Middlewares
+4. Factories
+```
+
+
+### 1.1. Options
+
+```
+다음에 해당하는 항목을 모두 포함하고 있습니다.
+
+1. 전역 미들웨어
+2. DB 연결 함수
+3. ENV 경로 설정 함수
+
+해당 함수들은 모두 app.js 에서 호출되어 설정값을 제어하고 있습니다.
+
+경우에 따라 필요한 인스턴스는 함수 외부에 변수를 만들어 export 하고 있습니다.
+```
+
+### 1.2. Token
+
+```
+Authentication 과정에서 빈번하게 사용될 SECRET 키 혹은 여러 함수를 캡슐화 하여 클래스에 담았습니다.
+주요한 설정값은 app.js 에서 setter 와 Inject.factory(후술) 을 통해서 입력받고 있습니다.
+```
+
+### 1.3. Middleware
+
+```
+1. req.body 에 값이 들어있는 지 확인하는 `Guard`
+2. req.headers 에 값이 들어있으며 유효한 지 확인하는 `Filter`
+```
+
+#### 1.3.1 Filter
+
+```
+목적에 맞게 캡슐화해 둔 JwtModule 과 ResFormFactory 를 이용하여 검증 절차를 진행합니다.
+
+1. access.token.filter.js | 엑세스 토큰 만료 검증
+2. refresh.token.filter.js | 리프레시 토큰 만료 검증
+3. owner.token.filter.js | 엑세스 토큰 만료 및 발행자 검증 후 오너 여부 확인
+```
+
+#### 1.3.2. Guard
+
+```
+어떠한 매개변수의 필요 유형은 다음과 같이 구분된다고 인지했습니다.
+
+1. 전부가 필요한 경우
+2. 최소한 한 개는 필요한 경우
+
+두 경우 모두 '존재 여부' 가 필요하므로 Set 구조와 for in 문법을 사용하여 구현하였습니다.
+```
+
+### 1.4. Facotries 
+
+```
+어떠한 일관된 데이터를 반환(생산) 한다는 역할을 하는 친구들을 별도로 모았습니다.
+
+1. Inject Facotry | 환경변수를 반환하는 메서드들을 담았습니다.
+2. ResForm Factory | 서버에서 반환 할 정보를 일관성 있게 담는 메서드를 담았습니다.
+3. Logger Factory | 개발 모드 별로 다른 로그를 사용할 수 있게 만드는 메서드를 담았습니다.
+```
+
+#### 1.4.1. Inject Factory
+
+```
+이는 유틸리티 클래스로 인스턴스 생성이 불가능합니다.
+
+config.option.js 에서 설정한 *.env.* 에 접근해 정해진 환경변수를 리턴하게 됩니다.
+
+반환하는 환경변수는 `일반 변수 혹은 객체` 의 형태로 가공되어 있습니다.
+```
+
+#### 1.4.2. ResForm Factory with SuccessForm, FailureForm
+
+```
+`성공 및 실패를 구분할 역할` 과 이에 맞는 `객체를 생성할 역할` 을 구분하였습니다.
+
+전자를 ResFormFactory 의 메서드가 담당하며 후자를 SuccessFOrm, FailureForm 클래스의 생성자가 담당합니다.
+
+ResFormFactory 는 또한 유틸리티 클래스로 인스턴스 생성이 불가능합니다.
+```
+
+```javascript
+class ResFormFactory {
+
+    // ...
+    
+    static getSuccessForm(message, data) {
+        return new SuccessForm(message, data);
+    }
+    
+    static getFailureForm(message) {
+        return new FailureForm(message);
+    }
+    
+    // ...
+
+}
+```
+
+#### 1.4.3. Logger Factory
+
+```
+ResForm Factory 와 같은 방식으로 구현했습니다.
+
+단, morgan 은 devDependencies 에 있으며,
+빌드 후 실행 시 morgan is devDependencies 가 발생할 것 같습니다.
+
+해당 부분의 문제가 해결되지 않은 상태입니다.
+```
+
+<hr>
 
 # Boilerplates
 
