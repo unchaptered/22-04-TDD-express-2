@@ -11,10 +11,11 @@ export const setRefreshToken = async (mongoId, refreshToken) => {
             EX: redisRefreshExpired
         });   
     } catch (error) {
-      return [false, error];
+        console.log(error);
+        return error;
     } 
 
-    return [true, null];
+    return null;
 
 }
 
@@ -25,11 +26,20 @@ export const getRefreshToken = async (mongoId) => {
 
     try {
         const result = await redisConnection.get(mongoId);
-        if (result !== null) return [true, result];
-
-        return [false, null];
+        return result;
     } catch (error) {
-        return [false, error];
+        return error;
     }
 
+}
+
+export const deleteRefreshToken = async (mongoId) => {
+
+    try {
+        const result = await redisConnection.del(mongoId);
+        return result;
+    } catch (error) {
+        return error;
+    }
+    
 }
