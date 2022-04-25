@@ -2,8 +2,10 @@ import express from 'express';
 
 // Environment Settings
 import 'dotenv/config';
-import { getConfig } from './options/config.option';
 import { getMongoDB } from './options/mongo.option';
+import { getRedisDB, setRedisRefreshExpired } from './options/redis.option';
+
+import { getConfig } from './options/config.option';
 import { getCorsInstance } from './options/cors.option';
 
 import InjectFactory from './factories/inject.factory'; // Environment Injector
@@ -23,6 +25,9 @@ const PORT = InjectFactory.getPort() ?? 4000;
 
 getConfig(MODE);
 getMongoDB(MODE, InjectFactory.getMongoAddress());
+
+getRedisDB(MODE, InjectFactory.getRedisOptions());
+setRedisRefreshExpired(InjectFactory.getRedisRefreshExpired());
 
 JwtModule.setSecert( InjectFactory.getJwtSecret() );
 JwtModule.setAlgorithm( InjectFactory.getJwtAlgorithm() );

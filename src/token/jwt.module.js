@@ -31,21 +31,40 @@ class JwtModule {
         })
     }
 
-    static decodeToken(token) {
+    static verifyToken(token) {
         if (this.SECRET === undefined) return;
         
         try {
-            const decodeData = jwt.verify(token, this.SECRET);
+            const verifyToken = jwt.verify(token, this.SECRET);
             return {
-                isValidToken: true,
+                isLiveToken: true,
                 message: 'authorized',
-                decodeToken: decodeData
+                verifyToken
             }
         } catch (error) {
             return {
+                isLiveToken: false,
+                message: 'unauthorized',
+                verifyToken: error
+            }
+        }
+    }
+
+    static decodeToken(token) {
+        if (this.SECRET === undefined) return;
+
+        try {
+            const decodeToken = jwt.decode(token, this.SECRET);
+            return {
+                isValidToken: true,
+                message: 'authorized',
+                decodeToken
+            }
+        } catch(error) {
+            return {
                 isValidToken: false,
                 message: 'unauthorized',
-                decodeToken: error,
+                decodeToken: error
             }
         }
     }

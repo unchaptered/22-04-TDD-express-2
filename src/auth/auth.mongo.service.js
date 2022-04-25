@@ -24,7 +24,7 @@ export const joinUser = async (email, password) => {
  * @returns user or null
  */
 export const loginUser = async (email, password) => {
-    const user =  await userModel.findOne({ email }).select('email');
+    const user =  await userModel.findOne({ email }).select('email password');
     const isSame = await bcrypt.compare(password, user.password);
     
     if (!isSame) return null;

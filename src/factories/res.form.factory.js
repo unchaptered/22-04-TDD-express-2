@@ -7,9 +7,15 @@ import FailureForm from './classes/response/failure.form';
 class ResFormFactory {
 
     static unathorized = 'Your must give two token for us';
+
     static accessTokenExpired = 'Access Token is expired';
     static refreshTokenExpired = 'Refresh Token is expired';
 
+    static accessTokenInvalid = 'Access Token is not valid';
+    static refreshTokenInvalid = 'Refresh Token is not valid';
+
+    static accessTokenInvalidExipred = ''
+    
     static getSuccessForm(message, data) {
         return new SuccessForm(message, data);
     }
@@ -17,6 +23,7 @@ class ResFormFactory {
     static getFailureForm(message) {
         return new FailureForm(message);
     }
+
 
     static getUnauthorizedForm() {
         return new FailureForm(this.unathorized);
@@ -27,6 +34,9 @@ class ResFormFactory {
     }
     static getRefreshTokenExpiredForm() {
         return new FailureForm(this.refreshTokenExpired);
+    }
+    static getInvalidExpiredForm() {
+        return new FailureForm(this.accessTokenInvalid);
     }
     
     /**

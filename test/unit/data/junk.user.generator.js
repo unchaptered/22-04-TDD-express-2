@@ -16,6 +16,8 @@ export const junkUserFormGenerator = () => {
 export const getNickname = () => faker.finance.accountName();
 export const getShortDescription = () => faker.lorem.word();
 export const getLongDescription = () => faker.lorem.sentence();
+
+export const getId = () => faker.internet.userName();
 export const getEmail = () => faker.internet.email();
 export const getUsername = () => faker.internet.userName();
 export const getPassword = () => faker.internet.password();
