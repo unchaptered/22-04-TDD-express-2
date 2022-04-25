@@ -19,7 +19,7 @@ export const accessTokenFilter = (req, res, next) => {
     const accessToken = accessTokenEncrypted.split('Bearer ')[1];
     const { isLiveToken } = JwtModule.verifyToken(accessToken);
     if (!isLiveToken)
-        return res.status(401).json(ResFormFactory.getExpiredAccessTokenForm());
+        return res.status(401).json(ResFormFactory.getAccessTokenExpiredForm());
 
     return next();
 
