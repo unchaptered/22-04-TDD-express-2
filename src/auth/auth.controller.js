@@ -15,7 +15,6 @@ export const login = async (req, res) => {
         }
       
         const account = await authMongoService.loginUser(email, password);
-        console.log(account);
         if (account === null) {
             const resJson = ResFormFactory.getFailureForm('The password don\'t match');
             return res.status(400).json(resJson);
@@ -24,9 +23,6 @@ export const login = async (req, res) => {
         const accessToken = JwtModule.encodeAccessToken({ _id:account._id, email: account.email });
         const refreshToken = JwtModule.encodeRefreshToken();
         
-        console.log(accessToken);
-        console.log(refreshToken);
-
         const result = await authRedisService.setRefreshToken(account._id.toString(), refreshToken);
         if (result !== null) {
             const resJson = ResFormFactory.getFailureForm({ name: result.name, message: result.message });

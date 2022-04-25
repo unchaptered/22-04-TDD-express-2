@@ -13,12 +13,15 @@ const authRouter = Router();
 
 authRouter
     .route('/')
-    .get(userFormGuard, login)
     .post(userFormGuard, join);
-    
+
 authRouter
     .route('/token')
-    .get(republishTokenFilter, reGetAccessToken);
+    .post(userFormGuard, login);
+    
+authRouter
+    .route('/token/re-issue')
+    .post(republishTokenFilter, reGetAccessToken);
     // 해당 미들웨어는 _id, email 값을 추출하여 req.body._id, email 안에 넣어줍니다.
 
 authRouter
