@@ -8,3 +8,7 @@ export const junkProductGenerator = () => ({
     price: faker.commerce.price()
 });
 export const junkProductListGenerator = (length) => Array.from({ length }, () => junkProductGenerator());
+
+
+export const getDescription = () => faker.commerce.productDescription();
+export const getDescriptionShort = () => faker.commerce.productDescription().substr(0, 10);
