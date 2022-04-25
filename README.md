@@ -1,6 +1,6 @@
-# Express
+# 22-04-TDD-express-2
 
-22-04-TDD-express-2 는 TDD / OOP 에 입각한 개발 연습용 레포입니다.
+jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 
 
 ## Purpose
 

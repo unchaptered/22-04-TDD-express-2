@@ -1,7 +1,8 @@
 {
-  "name": "express-web",
+  "name": "22-04-TDD-express-2",
   "version": "1.0.0",
-  "description": "",
+  "description": "jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~",
+  "author": "unchaptered/github",
   "main": "index.js",
   "scripts": {
     "prestart": "npm run build",
@@ -21,7 +22,6 @@
     "url": "git+https://github.com/unchaptered/express-web.git"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/unchaptered/express-web/issues"
