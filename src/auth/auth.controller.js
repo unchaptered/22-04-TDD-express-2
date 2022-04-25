@@ -88,9 +88,58 @@ export const reGetAccessToken = async (req, res) => {
 
 }
 
-export const getProfile = () => {
+export const getProfile = (req, res) => {
+
+    const _id = req.params._id;
+
+    const account = authMongoService.getProfileById(_id);
+    if (account === null) {
+        const resJson = ResFormFactory.getFailureForm(`The ${_id} is not exists`);
+        return res.status(404).json(resJson);
+    }
+
+    const resJson = ResFormFactory.getSuccessForm('Account Find!', account);
+    return res.status(201).json(resJson);
+
 }
-export const patchProfile = () => {
+
+export const patchProfile = (req, res) => {
+
+    // nickname, short, long, email, social 중 하나가 들어있음
+
+    const {
+        params: { _id }, body
+    } = req;
+
+    if (!authMongoService.isUserExistsById(_id)) {
+        const resJson = ResFormFactory.getFailureForm(`The ${_id} is not exists`);
+        return res.status(404).json(resJson);
+    }
+
+    const account = authMongoService.patchProfileByIdAndOptions(_id, body);
+    const resJson = ResFormFactory.getSuccessForm('The account is successfully updated', account);
+    return res.status(201).json(resJson);
+
 }
-export const delteProfile = () => {
+
+export const deleteProfile = (req, res) => {
+
+    const {
+        params: { _id }, body: { email, password }
+    } = req;
+
+    if (!authMongoService.isUserExistsById(_id)) {
+        const resJson = ResFormFactory.getFailureForm(`The ${_id} is not exists`);
+        return res.status(404).json(resJson);
+    }
+
+    const account = authMongoService.deleteProfileByEmailAndPassowrd(email, password);
+    if (account === null) {
+        const resJson = ResFormFactory.getFailureForm('The password don\'t match');
+        return res.status(400).json(resJson);
+    }
+
+    const resJson = ResFormFactory.getSuccessForm('The account is successfully deleted', { account });
+    return res.status(201).json(resJson);
+
 }
