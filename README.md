@@ -1,6 +1,10 @@
 # 22-04-TDD-express-2
 
+<<<<<<< HEAD
 jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~
+=======
+jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 
+>>>>>>> 8c1b8cfb0e5f690a3b1b1bf86284b39fd8c92505
 
 ## Purpose
 
