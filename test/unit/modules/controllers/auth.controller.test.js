@@ -2,7 +2,7 @@ import * as authController from '../../../../src/auth/auth.controller';
 import * as authMongoService from '../../../../src/auth/auth.mongo.service';
 import * as authRedisService from '../../../../src/auth/auth.redis.service';
 
-import { getUserForm, getId, getEmail } from '../../data/junk.user.generator';
+import { getUserForm, getId, getEmail, getNickname } from '../../data/junk.user.generator';
 
 import JwtModule from '../../../../src/token/jwt.module';
 
@@ -27,7 +27,7 @@ describe('AuthController', () => {
         // BASE_URL/auth/profile
         it('getProfile must be function', ()=> expect(typeof authController.getProfile).toBe(funcType));
         it('patchProfile must be function', ()=> expect(typeof authController.patchProfile).toBe(funcType));
-        it('delteProfile must be function', ()=> expect(typeof authController.delteProfile).toBe(funcType));
+        it('deleteProfile must be function', ()=> expect(typeof authController.deleteProfile).toBe(funcType));
         
     });
 
@@ -47,8 +47,13 @@ describe('AuthController', () => {
             next = jest.fn();
 
             authMongoService.isUserExists = jest.fn();
+            authMongoService.isUserExistsById = jest.fn();
+
             authMongoService.joinUser = jest.fn();
             authMongoService.loginUser = jest.fn();
+            authMongoService.getProfileById = jest.fn();
+            authMongoService.patchProfileByIdAndOptions = jest.fn();
+            authMongoService.deleteProfileByEmailAndPassowrd = jest.fn();
 
             JwtModule.encodeAccessToken = jest.fn();
             JwtModule.encodeRefreshToken = jest.fn();
@@ -362,6 +367,189 @@ describe('AuthController', () => {
                         accessToken: ACCESS_TOKEN,
                         refreshToken: REFRESH_TOKEN
                     }
+                });
+            });
+
+        });
+
+        describe('Get Profile Logic', () => {
+            
+            let FORM;
+            let FORM_ID;
+
+            beforeAll(() =>{
+                FORM = getUserForm();
+                FORM_ID = getId()
+            });
+            beforeEach(() => {
+                req.params._id = FORM_ID;
+            });
+
+            it('404 Not Found', async () => {
+                authMongoService.getProfileById.mockReturnValue(null);
+
+                await authController.getProfile(req, res, next);
+
+                expect(authMongoService.getProfileById).toBeCalledWith(FORM_ID);
+                expect(res.statusCode).toBe(404);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: false,
+                    message: `The ${FORM_ID} is not exists`,
+                    result: {}
+                });
+            });
+
+            it('201 Created', async () => {
+
+                authMongoService.getProfileById.mockReturnValue(FORM);
+
+                await authController.getProfile(req, res, next);
+
+                expect(authMongoService.getProfileById).toBeCalledWith(FORM_ID);
+                expect(res.statusCode).toBe(201);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: true,
+                    message: 'Account Find!',
+                    result: FORM
+                });
+            });
+
+        });
+
+        describe('Patch Profile Logic', () => {
+            
+            let FORM_ID;
+            let FORM;
+
+            beforeAll(() => {
+                FORM_ID = getId();
+            });
+
+            beforeEach(() => {
+                FORM = {
+                    nickname: getNickname(),
+                };
+
+                req.params._id = FORM_ID;
+                req.body = FORM;
+
+            });
+
+            it('404 Not Found', async () => {
+                authMongoService.isUserExistsById.mockReturnValue(false);
+                authMongoService.patchProfileByIdAndOptions.mockReturnValue(null);
+
+                await authController.patchProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.patchProfileByIdAndOptions).not.toBeCalled();
+                expect(res.statusCode).toBe(404);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: false,
+                    message: `The ${FORM_ID} is not exists`,
+                    result: {}
+                });
+
+            });
+
+            it('201 Created, with 1 body', async () => {
+                authMongoService.isUserExistsById.mockReturnValue(true);
+                authMongoService.patchProfileByIdAndOptions.mockReturnValue(FORM);
+
+                await authController.patchProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.patchProfileByIdAndOptions).toBeCalledWith(FORM_ID, FORM);
+                expect(res.statusCode).toBe(201);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: true,
+                    message: 'The account is successfully updated',
+                    result: { ...FORM }
+                });
+            });
+
+            it('201 Created, with Object Body', async () => {
+                const tmpEamil =getEmail();
+                FORM.email = tmpEamil;
+                authMongoService.isUserExistsById.mockReturnValue(true);
+                authMongoService.patchProfileByIdAndOptions.mockReturnValue(FORM);
+
+                await authController.patchProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.patchProfileByIdAndOptions).toBeCalledWith(FORM_ID, { ...FORM });
+                expect(res.statusCode).toBe(201);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: true,
+                    message: 'The account is successfully updated',
+                    result: { ...FORM }
+                });
+            });
+
+        });
+
+        describe('Delete Profile Logic', () => {
+
+            let FORM;
+            let FORM_ID;
+
+            beforeAll(() =>{
+                FORM = getUserForm();
+                FORM_ID = getId()
+            });
+            beforeEach(() => {
+                req.params._id = FORM_ID;
+                req.body = FORM;
+            });
+
+            it('404 Not Found', async () => {
+                authMongoService.isUserExistsById.mockReturnValue(false);
+                authMongoService.deleteProfileByEmailAndPassowrd.mockReturnValue(null);
+
+                await authController.deleteProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.deleteProfileByEmailAndPassowrd).not.toBeCalled();
+
+                expect(res.statusCode).toBe(404);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: false,
+                    message: `The ${FORM_ID} is not exists`,
+                    result: {}
+                });
+            });
+
+            it('400 Bad Request', async () => {
+                authMongoService.isUserExistsById.mockReturnValue(true);
+                authMongoService.deleteProfileByEmailAndPassowrd.mockReturnValue(null);
+
+                await authController.deleteProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.deleteProfileByEmailAndPassowrd).toBeCalledWith(FORM.email, FORM.password);
+
+                expect(res.statusCode).toBe(400);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: false,
+                    message: 'The password don\'t match',
+                    result: {}
+                });
+            });
+
+            it('201 Created', async () => {
+                authMongoService.isUserExistsById.mockReturnValue(true);
+                authMongoService.deleteProfileByEmailAndPassowrd.mockReturnValue(FORM);
+
+                await authController.deleteProfile(req, res, next);
+
+                expect(authMongoService.isUserExistsById).toBeCalledWith(FORM_ID);
+                expect(authMongoService.deleteProfileByEmailAndPassowrd).toBeCalledWith(FORM.email, FORM.password);
+
+                expect(res.statusCode).toBe(201);
+                expect(res._getJSONData()).toStrictEqual({
+                    isSuccess: true,
+                    message: 'The account is successfully deleted',
+                    result: { account: FORM }
                 });
             });
 
