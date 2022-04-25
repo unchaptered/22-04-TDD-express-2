@@ -44,11 +44,7 @@ export const getProfileById = async (_id) => {
 }
 
 export const deleteProfileByEmailAndPassowrd = async (_id, password) => {
-    console.log(_id, password);
-
     const userDB =  await userModel.findById(_id).select('email password');
-
-    console.log(userDB);
     const isSame = await bcrypt.compare(password, userDB.password);
     const user = await userModel.deleteOne({ _id });
 
