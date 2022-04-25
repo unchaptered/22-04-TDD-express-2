@@ -4,7 +4,7 @@ import ResFormFactory from '../../../../src/factories/res.form.factory';
 
 import { accessTokenFilter } from '../../../../src/middlewares/filters/access.token.filter';
 
-describe('RepublishTokenFilter', () => {
+describe('AccessTokenFilter', () => {
 
     let req;
     let res;

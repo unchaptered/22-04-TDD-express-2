@@ -56,7 +56,7 @@ describe('RepublishTokenFilter', () => {
             
             expect(res.statusCode).toBe(401);
             expect(res._getJSONData()).toStrictEqual({
-                    ...ResFormFactory.getRefreshTokenExpiredForm()
+                ...ResFormFactory.getRefreshTokenExpiredForm()
             });
         });
 
