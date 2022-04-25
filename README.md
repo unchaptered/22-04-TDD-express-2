@@ -1,10 +1,30 @@
 # 22-04-TDD-express-2
 
-jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~
+jest, supertest 를 이용한 TDD 연습 _ `22.04.21` ~
+
+- [Purpose](https://github.com/unchaptered/22-04-TDD-express-2#purpose)
+    - [Cause](https://github.com/unchaptered/22-04-TDD-express-2#cause)
+- [Structure](https://github.com/unchaptered/22-04-TDD-express-2#1-structure)
+    - [Controller](https://github.com/unchaptered/22-04-TDD-express-2#11-Controller)
+    - [Service](https://github.com/unchaptered/22-04-TDD-express-2#11-Service)
+- [Modules](https://github.com/unchaptered/22-04-TDD-express-2#2-modules)
+    - [Options](https://github.com/unchaptered/22-04-TDD-express-2#21-options)
+    - [Token](https://github.com/unchaptered/22-04-TDD-express-2#22-token)
+    - [Middleware](https://github.com/unchaptered/22-04-TDD-express-2#23-middleware)
+        - [Filter](https://github.com/unchaptered/22-04-TDD-express-2#231-filter)
+        - [Guard](https://github.com/unchaptered/22-04-TDD-express-2#232-guard)
+        - [Factories](https://github.com/unchaptered/22-04-TDD-express-2#24-facotries)
+            - [Inject Factory](https://github.com/unchaptered/22-04-TDD-express-2#241-inject-factory)
+            - [ResForm Factory with SuccessForm, FailureForm](https://github.com/unchaptered/22-04-TDD-express-2#242-resform-factory-with-successform-failureform)
+            - [Logger Factory](https://github.com/unchaptered/22-04-TDD-express-2#143-logger-factory)
+- [Databases](https://github.com/unchaptered/22-04-TDD-express-2#Databases)
+- [References](https://github.com/unchaptered/22-04-TDD-express-2#References)
+- [TIL](https://github.com/unchaptered/22-04-TDD-express-2#TIL)
 
 ## Purpose
 
 - [✅] Jest 를 이용한 유닛 테스트 작성 연습
+- [✅] Jest, Suertest 를 이용한 비즈니스 로직 검증
 - [✅] 서버의 반환 객체의 일관성 유지 / 사용성 향상 연습
 - [✅] 객체의 역할과 책임의 분리
 
@@ -38,6 +58,15 @@ controller 에서는 경우에 따라서 service 를 호출하여 정보를 받�
 service 는 실제적으로 MongoDB, Redis 에 접근해서 정보를 받아오는 비동기 처리 부분을 담았습니다.
 ```
 
+### 1.1 Controller
+
+일반적인 비즈니스 로직의 흐름을 포함합니다.
+
+### 1.2. Service
+
+DB 작업을 담당하고 있습니다.
+`MongoService` 와 `RedisService` 로 구분되어 있습니다.
+
 ## 2. Modules
 
 ```
@@ -55,8 +84,7 @@ service 는 실제적으로 MongoDB, Redis 에 접근해서 정보를 받아오�
 4. Factories
 ```
 
-
-### 1.1. Options
+### 2.1. Options
 
 ```
 다음에 해당하는 항목을 모두 포함하고 있습니다.
@@ -70,21 +98,21 @@ service 는 실제적으로 MongoDB, Redis 에 접근해서 정보를 받아오�
 경우에 따라 필요한 인스턴스는 함수 외부에 변수를 만들어 export 하고 있습니다.
 ```
 
-### 1.2. Token
+### 2.2. Token
 
 ```
 Authentication 과정에서 빈번하게 사용될 SECRET 키 혹은 여러 함수를 캡슐화 하여 클래스에 담았습니다.
 주요한 설정값은 app.js 에서 setter 와 Inject.factory(후술) 을 통해서 입력받고 있습니다.
 ```
 
-### 1.3. Middleware
+### 2.3. Middleware
 
 ```
 1. req.body 에 값이 들어있는 지 확인하는 `Guard`
 2. req.headers 에 값이 들어있으며 유효한 지 확인하는 `Filter`
 ```
 
-#### 1.3.1 Filter
+#### 2.3.1 Filter
 
 ```
 목적에 맞게 캡슐화해 둔 JwtModule 과 ResFormFactory 를 이용하여 검증 절차를 진행합니다.
@@ -94,7 +122,7 @@ Authentication 과정에서 빈번하게 사용될 SECRET 키 혹은 여러 함�
 3. owner.token.filter.js | 엑세스 토큰 만료 및 발행자 검증 후 오너 여부 확인
 ```
 
-#### 1.3.2. Guard
+#### 2.3.2. Guard
 
 ```
 어떠한 매개변수의 필요 유형은 다음과 같이 구분된다고 인지했습니다.
@@ -105,7 +133,7 @@ Authentication 과정에서 빈번하게 사용될 SECRET 키 혹은 여러 함�
 두 경우 모두 '존재 여부' 가 필요하므로 Set 구조와 for in 문법을 사용하여 구현하였습니다.
 ```
 
-### 1.4. Facotries 
+### 2.4. Facotries 
 
 ```
 어떠한 일관된 데이터를 반환(생산) 한다는 역할을 하는 친구들을 별도로 모았습니다.
@@ -115,7 +143,7 @@ Authentication 과정에서 빈번하게 사용될 SECRET 키 혹은 여러 함�
 3. Logger Factory | 개발 모드 별로 다른 로그를 사용할 수 있게 만드는 메서드를 담았습니다.
 ```
 
-#### 1.4.1. Inject Factory
+#### 2.4.1. Inject Factory
 
 ```
 이는 유틸리티 클래스로 인스턴스 생성이 불가능합니다.
@@ -125,7 +153,7 @@ config.option.js 에서 설정한 *.env.* 에 접근해 정해진 환경변수�
 반환하는 환경변수는 `일반 변수 혹은 객체` 의 형태로 가공되어 있습니다.
 ```
 
-#### 1.4.2. ResForm Factory with SuccessForm, FailureForm
+#### 2.4.2. ResForm Factory with SuccessForm, FailureForm
 
 ```
 `성공 및 실패를 구분할 역할` 과 이에 맞는 `객체를 생성할 역할` 을 구분하였습니다.
@@ -153,7 +181,7 @@ class ResFormFactory {
 }
 ```
 
-#### 1.4.3. Logger Factory
+#### 2.4.3. Logger Factory
 
 ```
 ResForm Factory 와 같은 방식으로 구현했습니다.
@@ -163,6 +191,25 @@ ResForm Factory 와 같은 방식으로 구현했습니다.
 
 해당 부분의 문제가 해결되지 않은 상태입니다.
 ```
+
+<hr>
+
+## Databases
+
+프로젝트에는 MongoDB 와 Redis 를 사용하였습니다.
+
+주 저장소로 MongoDB 를 사용하고 JWT RefreshToken 을 Redis 에 저장하여 사용하였습니다.
+<hr>
+
+## References
+
+[[NHN FORWARD 2021] Redis 야무지게 사용하기](https://www.youtube.com/watch?v=92NizoBL4uA&t=1025s)
+
+<hr>
+
+## TIL
+
+아직 미작성
 
 <hr>
 
