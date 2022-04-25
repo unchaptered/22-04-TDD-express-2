@@ -4,7 +4,6 @@
   "description": "jest, supertest 를 이용한 TDD 연습 _ 2022.04.21 ~",
   "author": "unchaptered/github",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "prestart": "npm run build",
     "build": "babel src/app.js",
@@ -29,18 +28,45 @@
   },
   "homepage": "https://github.com/unchaptered/express-web#readme",
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
+    "@types/jest": "^27.4.1",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
-    "winston": "^3.7.2"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.0",
+    "redis": "^4.0.6",
+    "winston": "^3.7.2",
+    "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-flow": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-watch": "^8.0.0",
+    "faker": "^5.5.3",
     "jest": "^27.5.1",
     "morgan": "^1.10.0",
     "node-mocks-http": "^1.11.0",
     "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "prettier": "^2.6.2",
+    "superagent": "^7.1.2",
+    "supertest": "^6.2.2",
+    "supertest-as-promised": "^4.0.2"
   }
 }
