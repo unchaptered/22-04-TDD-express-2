@@ -7,7 +7,7 @@ import { userPatchGuard } from "../middlewares/guards/user.patch.guard";
 import { ownerTokenFilter } from "../middlewares/filters/owner.token.filter";
 import { republishTokenFilter } from "../middlewares/filters/republish.token.filter";
 
-import { login, join, getProfile, patchProfile, delteProfile, reGetAccessToken } from './auth.controller';
+import { login, join, reGetAccessToken, getProfile, patchProfile, deleteProfile } from './auth.controller';
 
 const authRouter = Router();
 
@@ -25,7 +25,7 @@ authRouter
     .route('/profile/:_id')
     .get(ownerTokenFilter, getProfile)
     .patch(userPatchGuard, ownerTokenFilter, patchProfile)
-    .delete(userFormGuard, ownerTokenFilter, delteProfile);
+    .delete(userFormGuard, ownerTokenFilter, deleteProfile);
     
 export default authRouter;
 

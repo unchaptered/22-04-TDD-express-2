@@ -43,10 +43,16 @@ export const getProfileById = async (_id) => {
     return await userModel.findById(_id);
 }
 
-export const deleteProfileByEmailAndPassowrd = async (email, password) => {
-    const passwordEncrypt = await bcrypt.hash(password, 5);
+export const deleteProfileByEmailAndPassowrd = async (_id, password) => {
+    console.log(_id, password);
 
-    const user = await userModel.findOneAndDelete({ $and: [{ email }, { password: passwordEncrypt }] });
+    const userDB =  await userModel.findById(_id).select('email password');
+
+    console.log(userDB);
+    const isSame = await bcrypt.compare(password, userDB.password);
+    const user = await userModel.deleteOne({ _id });
+
+    if (!isSame) return null;
     return user;
 }
 
@@ -56,10 +62,19 @@ export const patchProfileByIdAndOptions = async (_id, {
     
     const user = await userModel.findById(_id);
     user.nickname = nickname === undefined ?  user.nickname : nickname;
-    user.short = short === undefined ? user.short : short;
-    user.long = long === undefined ? user.long : long;
-    user.email = email === undefined ? user.email : email;
-    user.social = social === undefined ? user.social : social;
+    user.description.short = short === undefined ? user.description.short : short;
+    user.description.long = long === undefined ? user.description.long : long;
+    user.meta.email = email === undefined ? user.meta.email : email;
+    
+    if (social !== undefined) {
+        if (user.meta.social.length === 0) {
+            user.meta.social.push(social);
+        } else {
+            const socialSet = new Set(user.meta.social);
+            if (!socialSet.has(social)) socialSet.add(social);
+            user.meta.social = [ ...socialSet ];
+        }
+    }
     await user.save();
     
     return user;
