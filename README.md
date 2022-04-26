@@ -15,10 +15,10 @@ jest, supertest 를 이용한 TDD 연습 _ `22.04.21` ~
     - [Middleware](https://github.com/unchaptered/22-04-TDD-express-2#23-middleware)
         - [Filter](https://github.com/unchaptered/22-04-TDD-express-2#231-filter) `JWT 필터`
         - [Guard](https://github.com/unchaptered/22-04-TDD-express-2#232-guard) `매개변수 필터`
-        - [Factories](https://github.com/unchaptered/22-04-TDD-express-2#24-facotries) `유틸리티 팩토리`
-            - [Inject Factory](https://github.com/unchaptered/22-04-TDD-express-2#241-inject-factory) `환경변수 주입 팩토리 클래스`
-            - [ResForm Factory with SuccessForm, FailureForm](https://github.com/unchaptered/22-04-TDD-express-2#242-resform-factory-with-successform-failureform) `반환객체 팩토리 클래스`
-            - [Logger Factory](https://github.com/unchaptered/22-04-TDD-express-2#143-logger-factory) `로그 팩토리 클래스`
+    - [Factories](https://github.com/unchaptered/22-04-TDD-express-2#24-facotries) `유틸리티 팩토리`
+        - [Inject Factory](https://github.com/unchaptered/22-04-TDD-express-2#241-inject-factory) `환경변수 주입 팩토리 클래스`
+        - [ResForm Factory with SuccessForm, FailureForm](https://github.com/unchaptered/22-04-TDD-express-2#242-resform-factory-with-successform-failureform) `반환객체 팩토리 클래스`
+        - [Logger Factory](https://github.com/unchaptered/22-04-TDD-express-2#143-logger-factory) `로그 팩토리 클래스`
 - [Databases](https://github.com/unchaptered/22-04-TDD-express-2#Databases)
 - [References](https://github.com/unchaptered/22-04-TDD-express-2#References)
 - [TIL](https://github.com/unchaptered/22-04-TDD-express-2#TIL)
